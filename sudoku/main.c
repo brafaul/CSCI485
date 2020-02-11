@@ -3,6 +3,15 @@
 #include <pthread.h>
 #include <string.h>
 
+void printPuzzle(int **puzzle){
+	for(int i = 0; i < 9; i++){
+		for(int j = 0; j < 9; j++){
+			printf("%d ", puzzle[i][j]);
+		}
+		printf("\n");
+	}
+}
+
 int **removeSpace(char unFilPuzzle[9][19]){
 	int **puzzle;
 	puzzle = (int**) malloc(9*sizeof(int*));
@@ -10,11 +19,10 @@ int **removeSpace(char unFilPuzzle[9][19]){
 		puzzle[i] = malloc(9*sizeof(int));
 		int count = 0;
 		char curr;
-		curr = strtok(unFilPuzzle[i], " ");
-		while(curr != NULL){
-			puzzle[i][count] = (int)curr;
+		while(count < 9){
+			curr = unFilPuzzle[i][count*2];
+			puzzle[i][count] = curr - 48;
 			count++;
-			curr = strtok(NULL, " ");
 		}
 	}
 	return puzzle;
@@ -27,14 +35,18 @@ int **read_puzzle(char *fileName){
 		exit(1);
 	}else{
 		int **puzzle;
+		puzzle = (int**)malloc(9*sizeof(int*));
 		char puzzleTemp[9][19];
 		char *line = NULL;
 		size_t len = 0;
 		for(int i=0; i < 9; i++){
+			puzzle = malloc(9*sizeof(int));
 			getline(&line, &len, fp);
 			strcpy(puzzleTemp[i], line);
+			//printf("%s", puzzleTemp[i]);
 		}
 		puzzle = removeSpace(puzzleTemp);
+		printPuzzle(puzzle);
 		return puzzle;
 	}
 }
