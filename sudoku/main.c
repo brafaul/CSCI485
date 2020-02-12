@@ -5,6 +5,12 @@
 
 int puzzleValidity = 1;
 
+struct args{
+	int **puzzle;
+	int rowStart;
+	int colStart;
+};
+
 void printPuzzle(int **puzzle){
 	for(int i = 0; i < 9; i++){
 		for(int j = 0; j < 9; j++){
@@ -25,7 +31,8 @@ void groupCheck(int group[9]){
 	}
 }
 
-void *checkRows(int **puzzle){
+void *checkRows(void *input){
+	int **puzzle = ((struct args*)input)->puzzle;
 	for(int i = 0; i < 9; i++){
 		int line[9];
 		for(int j = 0; j < 9; j++){
@@ -33,9 +40,11 @@ void *checkRows(int **puzzle){
 		}
 		groupCheck(line);
 	}
+	pthread_exit(NULL);
 	return NULL;
 }
-void *checkCols(int **puzzle){
+void *checkCols(void *input){
+	int **puzzle = ((struct args*)input)->puzzle;
 	for(int i = 0; i < 9; i++){
 		int line[9];
 		for(int j = 0; j < 9; j++){
@@ -43,11 +52,17 @@ void *checkCols(int **puzzle){
 		}
 		groupCheck(line);
 	}
+	pthread_exit(NULL);
 	return NULL;
 }
-void *checkBlock(int **puzzle, int rowStart, int colStart){
+void *checkBlock(void *input){
 	int line[9];
 	int count = 0;
+	struct args *local = ((struct args*)input);
+	int rowStart = local->rowStart;
+	int colStart = local->colStart;
+	int **puzzle = local->puzzle;
+	//printPuzzle(puzzle);
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
 			line[count] = puzzle[rowStart+i][colStart+j];
@@ -55,6 +70,7 @@ void *checkBlock(int **puzzle, int rowStart, int colStart){
 		}
 	}
 	groupCheck(line);
+	//pthread_exit(NULL);
 	return NULL;
 }
 
@@ -92,7 +108,6 @@ int **read_puzzle(char *fileName){
 			//printf("%s", puzzleTemp[i]);
 		}
 		puzzle = removeSpace(puzzleTemp);
-		printPuzzle(puzzle);
 		return puzzle;
 	}
 }
@@ -100,7 +115,27 @@ int **read_puzzle(char *fileName){
 int main(int argc, char *argv[]){
 	if(argc == 2){
 		int **puzzle = read_puzzle(argv[1]);
-		pthread_t threads[11];
+		pthread_t *threads[11];
+		int count = 0;
+		//struct args blockArgs[9];
+		for(int i = 0; i < 9; i += 3){
+			for(int  j = 0; j < 9; j += 3){
+				struct args blockArgs;
+				blockArgs.rowStart = i;
+			       	blockArgs.colStart = j;
+				blockArgs.puzzle = puzzle;
+				checkBlock(&blockArgs);
+				count++;
+			}
+		}
+		struct args puzzArg;
+		puzzArg.puzzle = puzzle;
+		int threadCheck =  pthread_create(&threads[9], NULL, checkRows, (void *)&puzzArg);
+		threadCheck  = pthread_create(&threads[10], NULL, checkCols, (void *)&puzzArg);
+		for(int i = 9; i < 11; i++){
+			pthread_join(threads[i], NULL);
+		}
+		printf("%d \n", puzzleValidity);
 	}else if(argc < 2){
 		fprintf(stderr, "Please provide the name of the file containing the sudoku puzzle to check \n");
 		exit(1);
