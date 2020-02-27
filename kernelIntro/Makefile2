@@ -1,0 +1,10 @@
+# Author(s): Brayden Faulkner & Hayden Nanney
+# Date: 2/27/2020
+# File name: Makefile
+# Description: this makefile compiles the seconds.c file
+
+obj-m +=seconds.o
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+clean:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
