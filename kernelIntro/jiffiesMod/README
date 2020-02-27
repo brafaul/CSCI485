@@ -1,0 +1,18 @@
+Name: README
+Project: Kernel Intro
+Authors: Brayden Faulkner and Hayden Nanney
+
+	This program is a simple kernel module that that prints out the
+current value of jiffies whenever /proc/jiffies is read. Much of the 
+programs structure and function make up comes from the hello.c example
+provided in the virtual machine. The program is fairly basic as far as 
+kernel modules go, and required fairly little non-standard code.
+
+	The ssize_t proc_read function runs whenever /proc/jiffies is read.
+It first reads in the current value of jiffies. Then creates all of the 
+variables needed in the function. It then creates the string that will be 
+output and copies is to the user space buffer.
+
+	The proc_init function and proc_exit function are fairly simple and 
+similar in function. The first simply creates the /proc/jiffies entry and
+the other removes it.
