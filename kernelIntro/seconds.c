@@ -17,11 +17,6 @@
 
 unsigned long startJiffies; //contains the value of jiffies at initialization
 
-//store the module owner and read proc function in struct
-static struct file_operations proc_ops = {
-	.owner = THIS_MODULE,
-	.read = proc_read,
-};
 
 /*** FUNCTION DESCRIPTIONS ***/
 
@@ -39,6 +34,13 @@ void proc_exit(void);
 /*Description:This function is called when the module is removed.
  *
  */
+
+//store the module owner and read proc function in struct
+static struct file_operations proc_ops = {
+	.owner = THIS_MODULE,
+	.read = proc_read,
+};
+
 
 /*** FUNCTIONS ***/
 
@@ -62,7 +64,7 @@ void proc_exit(void) {
 	remove_proc_entry(PROC_NAME, NULL);
 
 	//print removal message to kernel
-	printk(KERN_INFO "/proc/%s removed\n" PROC_NAME);
+	printk(KERN_INFO "/proc/%s removed\n", PROC_NAME);
 }
 
 ssize_t proc_read(struct file *file, char __user *usr_buf, size_t count, loff_t *pos){
