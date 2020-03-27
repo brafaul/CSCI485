@@ -21,7 +21,6 @@ void add(char *name, int priority, int burst){
 	temp->burst = burst;
 	__sync_fetch_and_add(&listIndex, 1);
 	insert(&head, temp);
-	//traverse(head);
 }
 
 void schedule(){
