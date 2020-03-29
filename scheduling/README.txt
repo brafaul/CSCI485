@@ -14,4 +14,9 @@ uses those parameters to make pointer to a task called temp, that is then
 added to the list. This function also increment the list index variable, 
 so the file has an accurate representation of what is in the list.
 	The schedule function varies from program to program. For the fcfs 
-program it first goes through the list and  
+program it first goes through the list and reverses it. Then the program
+runs each of the task in the reversed list.
+	The schedule function in the shortest job first loops through the 
+list a number of times equal to the listIndex variable, looping through the
+list and finding the shortest job each time. After finding the shortest job
+it is run then removed from the list.  

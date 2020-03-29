@@ -1,0 +1,4 @@
+FCFS: 85.5
+SJF: 82.5 
+RR: 143.75
+Priority: 100
